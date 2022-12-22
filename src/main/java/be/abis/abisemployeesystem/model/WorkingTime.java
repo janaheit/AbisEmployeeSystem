@@ -5,6 +5,7 @@ import java.time.LocalTime;
 
 public class WorkingTime {
 
+    private int id;
     private LocalDate date;
     private LocalTime startTime;
     private LocalTime endTime;
