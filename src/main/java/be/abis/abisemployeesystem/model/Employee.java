@@ -1,15 +1,35 @@
 package be.abis.abisemployeesystem.model;
 
+
+
+import javax.persistence.*;
+
 import java.util.List;
 
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "e_kind", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorValue("e")
+@Table(name = "employees")
 public class Employee {
 
-    private int id;
-    private String firstName;
-    private String lastName;
-    private String abbreviation;
-    private String password;
+    @SequenceGenerator(name = "employeeSeq", sequenceName = "employees_seq", allocationSize = 1)
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employeeSeq")
+    @Column(name = "employees_id")
+    private int id;
+    @Column(name = "firstname")
+    private String firstName;
+    @Column(name = "lastname")
+    private String lastName;
+    @Column(name = "abbreviation")
+    private String abbreviation;
+    @Column(name = "pass")
+    private String password;
+    @ElementCollection
+    @CollectionTable(name = "personroles", joinColumns = @JoinColumn(name = "employee_id"))
+    @Column(name="role")
     private List<String> roles;
 
     public Employee() {

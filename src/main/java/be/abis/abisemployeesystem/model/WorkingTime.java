@@ -1,5 +1,6 @@
 package be.abis.abisemployeesystem.model;
 
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
