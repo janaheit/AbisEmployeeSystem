@@ -4,6 +4,7 @@ package be.abis.abisemployeesystem.model;
 
 import javax.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,10 +28,10 @@ public class Employee {
     private String abbreviation;
     @Column(name = "pass")
     private String password;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "personroles", joinColumns = @JoinColumn(name = "employee_id"))
     @Column(name="role")
-    private List<String> roles;
+    private List<String> roles = new ArrayList<>();
 
     public Employee() {
     }

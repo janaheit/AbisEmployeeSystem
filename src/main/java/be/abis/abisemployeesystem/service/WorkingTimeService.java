@@ -11,6 +11,7 @@ public interface WorkingTimeService {
     WorkingTime getById(int id);
     List<WorkingTime> getByConsultantId(int consultantId);
     List<WorkingTime> getByDate(LocalDate date);
-    WorkingTime getByConsultantIdAndDate(int consultantId, LocalDate date);
+    List<WorkingTime> getByConsultantIdAndDate(int consultantId, LocalDate date);
+    WorkingTime startWorkingTime(int consultantId);
 
 }

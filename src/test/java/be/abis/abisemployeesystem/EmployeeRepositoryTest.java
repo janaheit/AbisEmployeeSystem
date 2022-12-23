@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.stream.Collectors;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -15,7 +17,7 @@ public class EmployeeRepositoryTest {
 
     @Test
     void findAll(){
-        System.out.println(repository.findAll());
+        System.out.println(repository.findAll().stream().map(e -> e.getRoles()).collect(Collectors.toList()));
     }
 
     @Test

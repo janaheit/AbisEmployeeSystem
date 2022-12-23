@@ -29,7 +29,12 @@ public class AbisWorkingTimeService implements WorkingTimeService {
     }
 
     @Override
-    public WorkingTime getByConsultantIdAndDate(int consultantId, LocalDate date) {
+    public List<WorkingTime> getByConsultantIdAndDate(int consultantId, LocalDate date) {
+        return null;
+    }
+
+    @Override
+    public WorkingTime startWorkingTime(int consultantId) {
         return null;
     }
 }
