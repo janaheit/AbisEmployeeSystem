@@ -19,6 +19,11 @@ public class EmployeeRepositoryTest {
     void findAll(){
         System.out.println(repository.findAll().stream().map(e -> e.getRoles()).collect(Collectors.toList()));
     }
+    @Test
+    void findAll1(){
+        System.out.println(repository.findAll());
+    }
+
 
     @Test
     void getEmployeesWithoutConsultant(){

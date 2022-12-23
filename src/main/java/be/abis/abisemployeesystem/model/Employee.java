@@ -30,7 +30,7 @@ public class Employee {
     private String password;
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "personroles", joinColumns = @JoinColumn(name = "employee_id"))
-    @Column(name="role")
+    @Column(name="personrole")
     private List<String> roles = new ArrayList<>();
 
     public Employee() {
