@@ -1,16 +1,30 @@
 package be.abis.abisemployeesystem.model;
 
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+@Entity
+@Table(name = "workingtimes")
 public class WorkingTime {
 
+    @SequenceGenerator(name = "workingTimeSeq", sequenceName = "workingtimes_seq", allocationSize = 1)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "workingTimeSeq")
+    @Column(name = "workingtimes_id")
     private int id;
+    @Column(name = "workingdate")
     private LocalDate date;
+    @Column(name = "starttime")
     private LocalTime startTime;
+    @Column(name = "endtime")
     private LocalTime endTime;
+    @Column(name = "timeworked")
     private LocalTime timeWorked;
+    @ManyToOne
+    @JoinColumn(name = "employee_id")
     private Consultant consultant;
 
     public WorkingTime() {
