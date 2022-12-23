@@ -1,6 +1,8 @@
 package be.abis.abisemployeesystem.service;
 
 import be.abis.abisemployeesystem.dto.LoginDTO;
+import be.abis.abisemployeesystem.exception.EmployeeNotFoundException;
+import be.abis.abisemployeesystem.model.Consultant;
 import be.abis.abisemployeesystem.model.Employee;
 import be.abis.abisemployeesystem.repository.AbisEmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,32 +18,37 @@ public class AbisEmployeeService implements EmployeeService {
 
     @Override
     public List<Employee> getAll() {
-        return null;
+        return employeeRepository.findAll();
     }
 
     @Override
-    public Employee getById(int id) {
-        return null;
+    public Employee getById(int id) throws EmployeeNotFoundException {
+        return employeeRepository.findById(id).orElseThrow(() -> new EmployeeNotFoundException("This employee does not exist"));
     }
 
     @Override
-    public List<Employee> getAllConsultants() {
-        return null;
+    public List<Consultant> getAllConsultants() {
+        return employeeRepository.getConsultants();
     }
 
     @Override
     public List<Employee> getAllNoneConsultants() {
-        return null;
+        return employeeRepository.getEmployeesWithoutConsultant();
     }
 
     @Override
     public List<Employee> getManagers() {
-        return null;
+        return employeeRepository.getManagers();
     }
 
     @Override
     public List<Employee> getAccountants() {
         return null;
+    }
+
+    @Override
+    public List<Employee> getTeachers() {
+        return employeeRepository.getTeachers();
     }
 
     @Override
@@ -52,5 +59,10 @@ public class AbisEmployeeService implements EmployeeService {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public boolean hasRole(int employeeId, String role) {
+        return (employeeRepository.hasRole(employeeId, role) != null);
     }
 }

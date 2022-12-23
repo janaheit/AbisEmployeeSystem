@@ -5,8 +5,6 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import java.util.List;
 
-@Entity
-@DiscriminatorValue("c")
 public class ConsultantDTO extends EmployeeDTO {
 
     private double hourlyRate;
@@ -14,9 +12,9 @@ public class ConsultantDTO extends EmployeeDTO {
     public ConsultantDTO() {
     }
 
-    public ConsultantDTO(String firstName, String lastName, String abbreviation, String password, List<String> roles,
+    public ConsultantDTO(int id, String firstName, String lastName, String abbreviation, List<String> roles,
                          double hourlyRate) {
-        super(firstName, lastName, abbreviation, password, roles);
+        super(id, firstName, lastName, abbreviation, roles);
         this.hourlyRate = hourlyRate;
     }
 

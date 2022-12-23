@@ -1,11 +1,12 @@
 package be.abis.abisemployeesystem;
 
+import be.abis.abisemployeesystem.exception.EmployeeNotFoundException;
 import be.abis.abisemployeesystem.service.EmployeeService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class EmployeeServiceTest {
@@ -14,17 +15,27 @@ public class EmployeeServiceTest {
 
     @Test
     void checkLoginExistingEmployee(){
-        fail();
+        assertTrue(employeeService.checkLogin("JS", "js123"));
     }
 
     @Test
     void checkLoginWrongPassword(){
-        fail();
+        assertFalse(employeeService.checkLogin("JS", "j123"));
     }
 
     @Test
     void checkLoginWrongAbbreviation(){
-        fail();
+        assertFalse(employeeService.checkLogin("JSA", "js123"));
+    }
+
+    @Test
+    void getById1ReturnsEmployee() throws EmployeeNotFoundException {
+        assertEquals("TAVERNIER", employeeService.getById(2).getLastName().trim());
+    }
+
+    @Test
+    void getById1000ThrowsException() throws EmployeeNotFoundException {
+        assertThrows(EmployeeNotFoundException.class, () -> employeeService.getById(1000));
     }
 
 

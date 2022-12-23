@@ -5,7 +5,8 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-
+@Entity
+@Table(name = "workingtimes")
 public class WorkingTime {
 
     @SequenceGenerator(name = "workingTimeSeq", sequenceName = "workingtimes_seq", allocationSize = 1)
@@ -21,7 +22,7 @@ public class WorkingTime {
     @Column(name = "endtime")
     private LocalTime endTime;
     @Column(name = "timeworked")
-    private LocalTime timeWorked;
+    private int timeWorkedMin;
     @ManyToOne
     @JoinColumn(name = "employee_id")
     private Consultant consultant;
@@ -29,11 +30,11 @@ public class WorkingTime {
     public WorkingTime() {
     }
 
-    public WorkingTime(LocalDate date, LocalTime startTime, LocalTime endTime, LocalTime timeWorked, Consultant consultant) {
+    public WorkingTime(LocalDate date, LocalTime startTime, LocalTime endTime, int timeWorkedMin, Consultant consultant) {
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.timeWorked = timeWorked;
+        this.timeWorkedMin = timeWorkedMin;
         this.consultant = consultant;
     }
 
@@ -61,12 +62,12 @@ public class WorkingTime {
         this.endTime = endTime;
     }
 
-    public LocalTime getTimeWorked() {
-        return timeWorked;
+    public int getTimeWorkedMin() {
+        return timeWorkedMin;
     }
 
-    public void setTimeWorked(LocalTime timeWorked) {
-        this.timeWorked = timeWorked;
+    public void setTimeWorkedMin(int timeWorked) {
+        this.timeWorkedMin = timeWorked;
     }
 
     public Consultant getConsultant() {

@@ -15,7 +15,8 @@ public class EmployeeDTO {
     public EmployeeDTO() {
     }
 
-    public EmployeeDTO(String firstName, String lastName, String abbreviation, List<String> roles) {
+    public EmployeeDTO(int id, String firstName, String lastName, String abbreviation, List<String> roles) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.abbreviation = abbreviation;
