@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class WorkingTimeRepositoryTest {
+public class WorkingTimeDTORepositoryTest {
 
     @Autowired
     WorkingTimeRepository repository;

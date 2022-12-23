@@ -5,8 +5,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@Entity
-@Table(name = "workingtimes")
+
 public class WorkingTime {
 
     @SequenceGenerator(name = "workingTimeSeq", sequenceName = "workingtimes_seq", allocationSize = 1)
