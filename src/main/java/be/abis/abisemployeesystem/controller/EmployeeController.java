@@ -23,8 +23,9 @@ public class EmployeeController {
     @Autowired
     EmployeeService employeeService;
 
-    @PostMapping()
-    boolean checkLogin(@RequestBody LoginDTO login){
+    @PostMapping("login")
+    Employee checkLogin(@RequestBody LoginDTO login) throws EmployeeNotFoundException {
+
         return employeeService.checkLogin(login.getAbbreviation(), login.getPassword());
     }
 

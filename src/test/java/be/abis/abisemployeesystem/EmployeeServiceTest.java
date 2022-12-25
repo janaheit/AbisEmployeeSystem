@@ -14,18 +14,18 @@ public class EmployeeServiceTest {
     EmployeeService employeeService;
 
     @Test
-    void checkLoginExistingEmployee(){
-        assertTrue(employeeService.checkLogin("JS", "js123"));
+    void checkLoginExistingEmployee() throws EmployeeNotFoundException {
+        assertEquals("JS",employeeService.checkLogin("JS", "js123").getAbbreviation());
     }
 
     @Test
-    void checkLoginWrongPassword(){
-        assertFalse(employeeService.checkLogin("JS", "j123"));
+    void checkLoginWrongPassword() throws EmployeeNotFoundException {
+        assertThrows(EmployeeNotFoundException.class,()-> employeeService.checkLogin("JS", "js12"));
     }
 
     @Test
-    void checkLoginWrongAbbreviation(){
-        assertFalse(employeeService.checkLogin("JSA", "js123"));
+    void checkLoginWrongAbbreviation() throws EmployeeNotFoundException {
+        assertThrows(EmployeeNotFoundException.class,()-> employeeService.checkLogin("JSA", "js123"));
     }
 
     @Test

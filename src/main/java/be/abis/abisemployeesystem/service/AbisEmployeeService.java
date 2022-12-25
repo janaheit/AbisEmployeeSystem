@@ -52,12 +52,13 @@ public class AbisEmployeeService implements EmployeeService {
     }
 
     @Override
-    public boolean checkLogin(String abbreviation, String password) {
+    public Employee checkLogin(String abbreviation, String password) throws EmployeeNotFoundException {
         Employee employee = employeeRepository.getByAbbreviationAndPassword(abbreviation, password);
         if (employee != null){
-            return true;
+            System.out.println(employee.getAbbreviation());
+            return employee;
         } else {
-            return false;
+            throw new  EmployeeNotFoundException("gebruikersnaam en wachtwoord matchen niet");
         }
     }
 

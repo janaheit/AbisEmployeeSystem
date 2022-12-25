@@ -16,7 +16,7 @@ public interface EmployeeService {
     List<Employee> getManagers();
     List<Employee> getAccountants();
     List<Employee> getTeachers();
-    boolean checkLogin(String abbreviation, String password);
+    Employee checkLogin(String abbreviation, String password) throws EmployeeNotFoundException;
     boolean hasRole(int employeeId, String role);
 
 
