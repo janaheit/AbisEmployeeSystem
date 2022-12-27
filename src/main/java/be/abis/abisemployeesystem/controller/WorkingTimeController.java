@@ -19,7 +19,7 @@ public class WorkingTimeController {
     WorkingTimeService workingTimeService;
 
     @GetMapping("start/{id}")
-    WorkingTime checkLogin(@PathVariable int consultantId) throws WrongTypeException, WorkingTimeCannotStartException, EmployeeNotFoundException {
+    WorkingTime checkLogin(@PathVariable("id") int consultantId) throws WrongTypeException, WorkingTimeCannotStartException, EmployeeNotFoundException {
 
         return workingTimeService.startWorkingTime(consultantId);
     }
