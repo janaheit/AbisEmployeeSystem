@@ -48,7 +48,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<? extends Object> getById(@RequestParam("id") int id) throws EmployeeNotFoundException {
+    ResponseEntity<? extends Object> getById(@PathVariable("id") int id) throws EmployeeNotFoundException {
         EmployeeDTO employee = EmployeeMapper.toDTO(employeeService.getById(id));
         return new ResponseEntity<EmployeeDTO>(employee, HttpStatus.OK);
     }
