@@ -24,5 +24,7 @@ public interface WorkingTimeRepository extends JpaRepository<WorkingTime, Intege
     @Query(value = "update workingtimes set endtime = :endtime where workingtimes_id = :id",nativeQuery = true)
     void endTime(int id, @Param("endtime") LocalTime endTime);
 
+    @Query(value = "select * from workingtimes where employee_id = :consultantId and workingdate = :date", nativeQuery = true)
+    List<WorkingTime> getWorkingTimesByConsultantIdAndDate(int consultantId, LocalDate date);
 
 }

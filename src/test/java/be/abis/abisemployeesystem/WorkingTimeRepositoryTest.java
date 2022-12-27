@@ -20,11 +20,16 @@ public class WorkingTimeRepositoryTest {
 
     @Test
     void consultantCanStartDay(){
-        repository.startTime(LocalDate.now(), LocalTime.now(), 8);
+        repository.startTime(LocalDate.now(), LocalTime.now(), 9);
     }
 
     @Test
     void consultantCanEndDay(){
-        repository.endTime(5, LocalTime.now());
+        repository.endTime(6, LocalTime.now());
+    }
+
+    @Test
+    void getWorkingTimesForConsultantOnDate(){
+        //repository.getWorkingTimesByConsultantIdAndDate();
     }
 }

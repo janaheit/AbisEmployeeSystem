@@ -6,6 +6,8 @@ package be.abis.abisemployeesystem.handler;
 
 import be.abis.abisemployeesystem.error.ApiError;
 import be.abis.abisemployeesystem.exception.EmployeeNotFoundException;
+import be.abis.abisemployeesystem.exception.WorkingTimeCannotStartException;
+import be.abis.abisemployeesystem.exception.WrongTypeException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,6 +26,29 @@ public class RestResponseEntityExceptionHandler
             ( EmployeeNotFoundException ance, WebRequest request) {
         HttpStatus status = HttpStatus.NOT_FOUND;
         ApiError err = new ApiError("not found", status.value(), ance.getMessage());
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.add("content-type",
+                MediaType.APPLICATION_PROBLEM_JSON_VALUE);
+        return new ResponseEntity<ApiError>(err, responseHeaders, status);
+    }
+
+    @ExceptionHandler(value = WorkingTimeCannotStartException.class)
+    protected ResponseEntity<? extends Object> workingTimeCannotBeStarted
+            ( WorkingTimeCannotStartException wtexc, WebRequest request) {
+        HttpStatus status = HttpStatus.CONFLICT;
+        ApiError err = new ApiError("bestaat al", status.value(), wtexc.getMessage());
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.add("content-type",
+                MediaType.APPLICATION_PROBLEM_JSON_VALUE);
+        return new ResponseEntity<ApiError>(err, responseHeaders, status);
+    }
+
+
+    @ExceptionHandler(value = WrongTypeException.class)
+    protected ResponseEntity<? extends Object> wrongTypeException
+            ( WrongTypeException wtexc, WebRequest request) {
+        HttpStatus status = HttpStatus.CONFLICT;
+        ApiError err = new ApiError("wrong type", status.value(), wtexc.getMessage());
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("content-type",
                 MediaType.APPLICATION_PROBLEM_JSON_VALUE);

@@ -4,6 +4,7 @@ package be.abis.abisemployeesystem.model;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "workingtimes")
@@ -22,7 +23,7 @@ public class WorkingTime {
     @Column(name = "endtime")
     private LocalTime endTime;
     @Column(name = "timeworked")
-    private int timeWorkedMin;
+    private Integer timeWorkedMin;
     @ManyToOne
     @JoinColumn(name = "employee_id")
     private Consultant consultant;
@@ -36,6 +37,31 @@ public class WorkingTime {
         this.endTime = endTime;
         this.timeWorkedMin = timeWorkedMin;
         this.consultant = consultant;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        WorkingTime that = (WorkingTime) o;
+        return timeWorkedMin == that.timeWorkedMin && date.equals(that.date) && startTime.equals(that.startTime) && Objects.equals(endTime, that.endTime) && consultant.equals(that.consultant);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(date, consultant);
+    }
+
+    @Override
+    public String toString() {
+        return "WorkingTime{" +
+                "id=" + id +
+                ", date=" + date +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", timeWorkedMin=" + timeWorkedMin +
+                ", consultant=" + consultant +
+                '}';
     }
 
     public LocalDate getDate() {
@@ -63,7 +89,7 @@ public class WorkingTime {
     }
 
     public int getTimeWorkedMin() {
-        return timeWorkedMin;
+        return (timeWorkedMin == null ? 0 : timeWorkedMin);
     }
 
     public void setTimeWorkedMin(int timeWorked) {
