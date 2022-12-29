@@ -71,7 +71,7 @@ public class AbisWorkingTimeService implements WorkingTimeService {
 
         WorkingTime time = new WorkingTime();
         time.setDate(LocalDate.now());
-        time.setStartTime(LocalTime.now());
+        time.setStartTime(LocalTime.now().truncatedTo(ChronoUnit.MINUTES));
         time.setConsultant(consultant);
         time.setTimeWorkedMin(0);
 
@@ -101,7 +101,7 @@ public class AbisWorkingTimeService implements WorkingTimeService {
             throw new WorkingTimeCannotEndException("Er zijn geen uren voor deze persoon die kunnen worden gestopt");
         }
 
-        update.setEndTime(LocalTime.now());
+        update.setEndTime(LocalTime.now().truncatedTo(ChronoUnit.MINUTES));
         // calculate difference in minutes = timeWorked
         int mins = (int) update.getStartTime().until(update.getEndTime(), ChronoUnit.MINUTES);
         update.setTimeWorkedMin(mins);
