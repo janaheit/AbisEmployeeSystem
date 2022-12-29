@@ -6,6 +6,7 @@ package be.abis.abisemployeesystem.handler;
 
 import be.abis.abisemployeesystem.error.ApiError;
 import be.abis.abisemployeesystem.exception.EmployeeNotFoundException;
+import be.abis.abisemployeesystem.exception.WorkingTimeCannotEndException;
 import be.abis.abisemployeesystem.exception.WorkingTimeCannotStartException;
 import be.abis.abisemployeesystem.exception.WrongTypeException;
 import org.springframework.http.HttpHeaders;
@@ -37,6 +38,16 @@ public class RestResponseEntityExceptionHandler
             ( WorkingTimeCannotStartException wtexc, WebRequest request) {
         HttpStatus status = HttpStatus.CONFLICT;
         ApiError err = new ApiError("bestaat al", status.value(), wtexc.getMessage());
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.add("content-type",
+                MediaType.APPLICATION_PROBLEM_JSON_VALUE);
+        return new ResponseEntity<ApiError>(err, responseHeaders, status);
+    }
+    @ExceptionHandler(value = WorkingTimeCannotEndException.class)
+    protected ResponseEntity<? extends Object> workingTimeCannotBeEnded
+            ( WorkingTimeCannotEndException wtexc, WebRequest request) {
+        HttpStatus status = HttpStatus.CONFLICT;
+        ApiError err = new ApiError("geen open uren", status.value(), wtexc.getMessage());
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("content-type",
                 MediaType.APPLICATION_PROBLEM_JSON_VALUE);

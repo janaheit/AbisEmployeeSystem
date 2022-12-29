@@ -1,6 +1,7 @@
 package be.abis.abisemployeesystem.service;
 
 import be.abis.abisemployeesystem.exception.EmployeeNotFoundException;
+import be.abis.abisemployeesystem.exception.WorkingTimeCannotEndException;
 import be.abis.abisemployeesystem.exception.WorkingTimeCannotStartException;
 import be.abis.abisemployeesystem.exception.WrongTypeException;
 import be.abis.abisemployeesystem.model.WorkingTime;
@@ -16,7 +17,7 @@ public interface WorkingTimeService {
     List<WorkingTime> getByDate(LocalDate date);
     List<WorkingTime> getByConsultantIdAndDate(int consultantId, LocalDate date);
     WorkingTime startWorkingTime(int consultantId) throws EmployeeNotFoundException, WrongTypeException, WorkingTimeCannotStartException;
-    WorkingTime endWorkingTime(int consultantId);
+    WorkingTime endWorkingTime(int consultantId) throws WorkingTimeCannotEndException, WrongTypeException, EmployeeNotFoundException;
 
 
 }

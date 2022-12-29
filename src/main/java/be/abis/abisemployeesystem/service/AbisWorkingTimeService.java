@@ -1,6 +1,7 @@
 package be.abis.abisemployeesystem.service;
 
 import be.abis.abisemployeesystem.exception.EmployeeNotFoundException;
+import be.abis.abisemployeesystem.exception.WorkingTimeCannotEndException;
 import be.abis.abisemployeesystem.exception.WorkingTimeCannotStartException;
 import be.abis.abisemployeesystem.exception.WrongTypeException;
 import be.abis.abisemployeesystem.model.Consultant;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -76,13 +78,34 @@ public class AbisWorkingTimeService implements WorkingTimeService {
         return workingTimeRepository.save(time);
     }
 
+    @Transactional
     @Override
-    public WorkingTime endWorkingTime(int consultantId) {
+    public WorkingTime endWorkingTime(int consultantId) throws WorkingTimeCannotEndException, WrongTypeException, EmployeeNotFoundException {
+
+        if (!(employeeService.getById(consultantId) instanceof Consultant)){
+            throw new WrongTypeException("alleen consultants kunnen hun uren registreren");
+        }
+
         // check whether a working time for this consultant already exists
+        List<WorkingTime> timesToday = workingTimeRepository.getWorkingTimesByConsultantIdAndDate(consultantId, LocalDate.now());
+        WorkingTime update = null;
 
+        for(WorkingTime time : timesToday){
+            System.out.println(time);
+            if(time.getEndTime() == null){
+                update = time;
+                break;
+            }
+        }
+        if (update == null){
+            throw new WorkingTimeCannotEndException("Er zijn geen uren voor deze persoon die kunnen worden gestopt");
+        }
 
-        // setTimeWorked
+        update.setEndTime(LocalTime.now());
+        // calculate difference in minutes = timeWorked
+        int mins = (int) update.getStartTime().until(update.getEndTime(), ChronoUnit.MINUTES);
+        update.setTimeWorkedMin(mins);
 
-        return null;
+        return workingTimeRepository.save(update);
     }
 }

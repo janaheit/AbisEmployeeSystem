@@ -2,6 +2,7 @@ package be.abis.abisemployeesystem.controller;
 
 import be.abis.abisemployeesystem.dto.LoginDTO;
 import be.abis.abisemployeesystem.exception.EmployeeNotFoundException;
+import be.abis.abisemployeesystem.exception.WorkingTimeCannotEndException;
 import be.abis.abisemployeesystem.exception.WorkingTimeCannotStartException;
 import be.abis.abisemployeesystem.exception.WrongTypeException;
 import be.abis.abisemployeesystem.model.Employee;
@@ -23,6 +24,10 @@ public class WorkingTimeController {
         return workingTimeService.startWorkingTime(consultantId);
     }
 
+    @GetMapping("end/{id}")
+    WorkingTime end(@PathVariable("id") int consultantId) throws WrongTypeException, EmployeeNotFoundException, WorkingTimeCannotEndException {
+        return workingTimeService.endWorkingTime(consultantId);
+    }
 
 
 }
