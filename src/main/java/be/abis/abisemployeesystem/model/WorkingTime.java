@@ -103,4 +103,8 @@ public class WorkingTime {
     public void setConsultant(Consultant consultant) {
         this.consultant = consultant;
     }
+
+    public int getId() {
+        return id;
+    }
 }

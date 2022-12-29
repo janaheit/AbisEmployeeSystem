@@ -10,6 +10,7 @@ import be.abis.abisemployeesystem.repository.WorkingTimeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -45,6 +46,7 @@ public class AbisWorkingTimeService implements WorkingTimeService {
         return null;
     }
 
+    @Transactional
     @Override
     public WorkingTime startWorkingTime(int consultantId) throws EmployeeNotFoundException, WrongTypeException, WorkingTimeCannotStartException {
         Employee employee = employeeService.getById(consultantId);
@@ -71,7 +73,7 @@ public class AbisWorkingTimeService implements WorkingTimeService {
         time.setConsultant(consultant);
         time.setTimeWorkedMin(0);
 
-        return  workingTimeRepository.save(time);
+        return workingTimeRepository.save(time);
     }
 
     @Override
