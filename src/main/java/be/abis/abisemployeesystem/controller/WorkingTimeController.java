@@ -29,5 +29,4 @@ public class WorkingTimeController {
         return workingTimeService.endWorkingTime(consultantId);
     }
 
-
 }
