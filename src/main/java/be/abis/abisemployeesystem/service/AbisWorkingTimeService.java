@@ -43,9 +43,11 @@ public class AbisWorkingTimeService implements WorkingTimeService {
         return null;
     }
 
+    @Transactional
     @Override
-    public List<WorkingTime> getByConsultantIdAndDate(int consultantId, LocalDate date) {
-        return null;
+    public List<WorkingTime> getByConsultantIdAndDate(int consultantId, LocalDate date) throws EmployeeNotFoundException {
+        employeeService.getById(consultantId);
+        return workingTimeRepository.getWorkingTimesByConsultantIdAndDate(consultantId, date);
     }
 
     @Transactional
@@ -105,6 +107,7 @@ public class AbisWorkingTimeService implements WorkingTimeService {
         // calculate difference in minutes = timeWorked
         int mins = (int) update.getStartTime().until(update.getEndTime(), ChronoUnit.MINUTES);
         update.setTimeWorkedMin(mins);
+        //TODO if working time is less than a minutes do not save -> throw error?
 
         return workingTimeRepository.save(update);
     }
