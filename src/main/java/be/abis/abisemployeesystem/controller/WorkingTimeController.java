@@ -38,4 +38,9 @@ public class WorkingTimeController {
         return workingTimeService.getByConsultantIdAndDate(consultantId, LocalDate.now());
     }
 
+    @GetMapping("open/{id}")
+    WorkingTime getOpenWorkingTimeTodayForConsultantId(@PathVariable("id") int consultantId) throws WrongTypeException, EmployeeNotFoundException {
+        return workingTimeService.getOpenWorkingTimeForConsultantId(consultantId);
+    }
+
 }

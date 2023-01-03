@@ -27,4 +27,8 @@ public interface WorkingTimeRepository extends JpaRepository<WorkingTime, Intege
     @Query(value = "select * from workingtimes where employee_id = :consultantId and workingdate = :date", nativeQuery = true)
     List<WorkingTime> getWorkingTimesByConsultantIdAndDate(int consultantId, LocalDate date);
 
+    @Query(value = "select * from workingtimes where employee_id = :consultantId and workingdate >= :start " +
+            "and workingdate <= :end", nativeQuery = true)
+    List<WorkingTime> getWorkingTimesByConsultantIdBetweenDates(int consultantId, LocalDate start, LocalDate end);
+
 }

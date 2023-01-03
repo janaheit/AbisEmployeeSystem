@@ -78,4 +78,38 @@ public class WorkingTimeServiceTest {
     void endWorkingTimeForNonExistingEmployeeThrowsException() {
         assertThrows(EmployeeNotFoundException.class, () -> workingTimeService.endWorkingTime(1000));
     }
+
+    @Transactional
+    @Test
+    void getOpenWorkingTimeForConsultant() throws WrongTypeException, WorkingTimeCannotStartException, EmployeeNotFoundException {
+        WorkingTime start = workingTimeService.startWorkingTime(3);
+        WorkingTime time = workingTimeService.getOpenWorkingTimeForConsultantId(3);
+        assertEquals(3, time.getConsultant().getId());
+        assertEquals(start.getStartTime(), time.getStartTime());
+    }
+
+    @Test
+    void roundWorkingTime(){
+        assertEquals(465, workingTimeService.roundWorkingTime(460));
+    }
+
+    @Test
+    void roundWorkingTime2(){
+        assertEquals(450, workingTimeService.roundWorkingTime(445));
+    }
+
+    @Test
+    void getWorkingMinutesForConsultant11Returns420MinsAKA7hours(){
+        assertEquals(420, workingTimeService.getWorkingMinutesOfConsultantForMonth(11, 12, 2022));
+    }
+
+    @Test
+    void getSalaryForConsultant11Returns210_000() throws WrongTypeException, EmployeeNotFoundException {
+        assertEquals(210_000.0, workingTimeService.calculateSalaryOfConsultantForMonth(11, 12, 2022));
+    }
+
+    @Test
+    void getSalariesForAllConsultants() throws WrongTypeException, EmployeeNotFoundException {
+        System.out.println(workingTimeService.calculateSalariesOfAllConsultantsForMonth( 12, 2022));
+    }
 }
