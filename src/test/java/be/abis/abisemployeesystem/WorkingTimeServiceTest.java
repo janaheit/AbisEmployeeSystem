@@ -99,6 +99,11 @@ public class WorkingTimeServiceTest {
     }
 
     @Test
+    void roundWorkingTimeFullHour(){
+        assertEquals(480, workingTimeService.roundWorkingTime(480));
+    }
+
+    @Test
     void getWorkingMinutesForConsultant11Returns420MinsAKA7hours(){
         assertEquals(420, workingTimeService.getWorkingMinutesOfConsultantForMonth(11, 12, 2022));
     }

@@ -126,13 +126,13 @@ public class AbisWorkingTimeService implements WorkingTimeService {
     }
 
     @Override
-    public Map<Integer, Double> calculateSalariesOfAllConsultantsForMonth(int month, int year) throws EmployeeNotFoundException, WrongTypeException {
+    public Map<Consultant, Double> calculateSalariesOfAllConsultantsForMonth(int month, int year) throws EmployeeNotFoundException, WrongTypeException {
         List<Consultant> consultants = employeeService.getAllConsultants();
 
-        Map<Integer, Double> salaries = new HashMap<>();
+        Map<Consultant, Double> salaries = new HashMap<>();
         consultants.forEach(c -> {
             try {
-                salaries.put(c.getId(), calculateSalaryOfConsultantForMonth(c.getId(), month, year));
+                salaries.put(c, calculateSalaryOfConsultantForMonth(c.getId(), month, year));
             } catch (EmployeeNotFoundException | WrongTypeException e) {
                 throw new RuntimeException(e);
             }
