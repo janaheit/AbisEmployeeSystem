@@ -1,6 +1,7 @@
 package be.abis.abisemployeesystem.controller;
 
 import be.abis.abisemployeesystem.dto.ConsultantDTO;
+import be.abis.abisemployeesystem.dto.ConsultantSalaryDTO;
 import be.abis.abisemployeesystem.dto.LoginDTO;
 import be.abis.abisemployeesystem.exception.EmployeeNotFoundException;
 import be.abis.abisemployeesystem.exception.WorkingTimeCannotEndException;
@@ -49,13 +50,8 @@ public class WorkingTimeController {
     }
 
     @GetMapping("salaries/{year}/{month}")
-    Map<ConsultantDTO, Double> getSalariesOfAllConsultantsForYearAndMonth(@PathVariable("year") int year, @PathVariable("month") int month) throws WrongTypeException, EmployeeNotFoundException {
-        return workingTimeService.calculateSalariesOfAllConsultantsForMonth(month, year).entrySet().stream()
-                .map((e)-> new AbstractMap.SimpleEntry<>(ConsultantMapper.toDTO(e.getKey()), e.getValue()))
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue
-                ));
+    List<ConsultantSalaryDTO> getSalariesOfAllConsultantsForYearAndMonth(@PathVariable("year") int year, @PathVariable("month") int month) throws WrongTypeException, EmployeeNotFoundException {
+        return workingTimeService.calculateSalariesOfAllConsultantsForMonth(month, year);
     }
 
 }

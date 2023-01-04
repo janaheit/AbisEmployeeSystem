@@ -110,7 +110,8 @@ public class WorkingTimeServiceTest {
 
     @Test
     void getSalaryForConsultant11Returns210_000() throws WrongTypeException, EmployeeNotFoundException {
-        assertEquals(210_000.0, workingTimeService.calculateSalaryOfConsultantForMonth(11, 12, 2022));
+        assertEquals(420, workingTimeService.calculateSalaryOfConsultantForMonth(11, 12, 2022).getMinutesWorked());
+        assertEquals(2137.5, workingTimeService.calculateSalaryOfConsultantForMonth(11, 12, 2022).getSalary());
     }
 
     @Test

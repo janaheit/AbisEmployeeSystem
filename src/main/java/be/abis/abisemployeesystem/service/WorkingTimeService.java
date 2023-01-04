@@ -1,16 +1,15 @@
 package be.abis.abisemployeesystem.service;
 
+import be.abis.abisemployeesystem.dto.ConsultantSalaryDTO;
+import be.abis.abisemployeesystem.dto.WorkingTimeSalaryDTO;
 import be.abis.abisemployeesystem.exception.EmployeeNotFoundException;
 import be.abis.abisemployeesystem.exception.WorkingTimeCannotEndException;
 import be.abis.abisemployeesystem.exception.WorkingTimeCannotStartException;
 import be.abis.abisemployeesystem.exception.WrongTypeException;
-import be.abis.abisemployeesystem.model.Consultant;
-import be.abis.abisemployeesystem.model.Employee;
 import be.abis.abisemployeesystem.model.WorkingTime;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 public interface WorkingTimeService {
 
@@ -22,10 +21,10 @@ public interface WorkingTimeService {
     WorkingTime getOpenWorkingTimeForConsultantId(int consultantId) throws EmployeeNotFoundException, WrongTypeException;
     WorkingTime startWorkingTime(int consultantId) throws EmployeeNotFoundException, WrongTypeException, WorkingTimeCannotStartException;
     WorkingTime endWorkingTime(int consultantId) throws WorkingTimeCannotEndException, WrongTypeException, EmployeeNotFoundException;
-    int getWorkingMinutesOfConsultantForMonth(int consultantId, int month, int year);
+    long getWorkingMinutesOfConsultantForMonth(int consultantId, int month, int year);
     int roundWorkingTime(int minutesWorked);
-    double calculateSalaryOfConsultantForMonth(int consultantId, int month, int year) throws EmployeeNotFoundException, WrongTypeException;
-    Map<Consultant, Double> calculateSalariesOfAllConsultantsForMonth(int month, int year) throws EmployeeNotFoundException, WrongTypeException;
+    WorkingTimeSalaryDTO calculateSalaryOfConsultantForMonth(int consultantId, int month, int year) throws EmployeeNotFoundException, WrongTypeException;
+    List<ConsultantSalaryDTO> calculateSalariesOfAllConsultantsForMonth(int month, int year) throws EmployeeNotFoundException, WrongTypeException;
 
 
 

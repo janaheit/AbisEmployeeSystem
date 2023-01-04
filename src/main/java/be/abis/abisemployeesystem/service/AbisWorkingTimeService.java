@@ -1,9 +1,12 @@
 package be.abis.abisemployeesystem.service;
 
+import be.abis.abisemployeesystem.dto.ConsultantSalaryDTO;
+import be.abis.abisemployeesystem.dto.WorkingTimeSalaryDTO;
 import be.abis.abisemployeesystem.exception.EmployeeNotFoundException;
 import be.abis.abisemployeesystem.exception.WorkingTimeCannotEndException;
 import be.abis.abisemployeesystem.exception.WorkingTimeCannotStartException;
 import be.abis.abisemployeesystem.exception.WrongTypeException;
+import be.abis.abisemployeesystem.mapper.ConsultantSalaryMapper;
 import be.abis.abisemployeesystem.model.Consultant;
 import be.abis.abisemployeesystem.model.Employee;
 import be.abis.abisemployeesystem.model.WorkingTime;
@@ -15,6 +18,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -126,13 +130,14 @@ public class AbisWorkingTimeService implements WorkingTimeService {
     }
 
     @Override
-    public Map<Consultant, Double> calculateSalariesOfAllConsultantsForMonth(int month, int year) throws EmployeeNotFoundException, WrongTypeException {
+    public List<ConsultantSalaryDTO> calculateSalariesOfAllConsultantsForMonth(int month, int year) throws EmployeeNotFoundException, WrongTypeException {
         List<Consultant> consultants = employeeService.getAllConsultants();
 
-        Map<Consultant, Double> salaries = new HashMap<>();
+        List<ConsultantSalaryDTO> salaries = new ArrayList<>();
         consultants.forEach(c -> {
             try {
-                salaries.put(c, calculateSalaryOfConsultantForMonth(c.getId(), month, year));
+                WorkingTimeSalaryDTO workingTimeSalaryDTO = calculateSalaryOfConsultantForMonth(c.getId(), month, year);
+                salaries.add(ConsultantSalaryMapper.toDTO(c, workingTimeSalaryDTO.getSalary(), workingTimeSalaryDTO.getMinutesWorked()));
             } catch (EmployeeNotFoundException | WrongTypeException e) {
                 throw new RuntimeException(e);
             }
@@ -142,23 +147,27 @@ public class AbisWorkingTimeService implements WorkingTimeService {
     }
 
     @Override
-    public double calculateSalaryOfConsultantForMonth(int consultantId, int month, int year) throws EmployeeNotFoundException, WrongTypeException {
+    public WorkingTimeSalaryDTO calculateSalaryOfConsultantForMonth(int consultantId, int month, int year) throws EmployeeNotFoundException, WrongTypeException {
         Employee e = employeeService.getById(consultantId);
         Consultant c = null;
         if (e instanceof Consultant) c = (Consultant) e;
         else throw new WrongTypeException("salaris kan alleen voor zelfstandige worden berekend");
 
-        int min = getWorkingMinutesOfConsultantForMonth(consultantId, month, year);
-        return c.getHourlyRate() * min;
+        long min = getWorkingMinutesOfConsultantForMonth(consultantId, month, year);
+        double hours = ((double)min)/60;
+        double salary = c.getHourlyRate() * hours;
+        System.out.println("hours of id: " + c.getId() + " : " + hours + " has salary: " + salary);
+        return new WorkingTimeSalaryDTO(salary, min);
     }
 
     @Override
-    public int getWorkingMinutesOfConsultantForMonth(int consultantId, int month, int year) {
+    public long getWorkingMinutesOfConsultantForMonth(int consultantId, int month, int year) {
         LocalDate start = LocalDate.of(year, month, 1);
         LocalDate end = LocalDate.of(year, month, start.lengthOfMonth());
 
         List<WorkingTime> monthlyWorkingTimesList = workingTimeRepository.getWorkingTimesByConsultantIdBetweenDates(
                 consultantId, start, end);
+
 
         Map<LocalDate, Integer> dailyWorkingTimesMap = new HashMap<>();
 
@@ -167,7 +176,14 @@ public class AbisWorkingTimeService implements WorkingTimeService {
                         prev + time.getTimeWorkedMin());
         }
 
-        return dailyWorkingTimesMap.values().stream().map(this::roundWorkingTime).mapToInt(Integer::intValue).sum();
+        long minutesWorkedPerMonth = dailyWorkingTimesMap.values().stream().map(this::roundWorkingTime).mapToLong(Integer::longValue).sum();
+
+        // Here calculating the days where a person only registered one working time and this time being more than
+        // 6 hours => only then, we want to subtract 1 hour lunch break (so that people are not paid for lunch)
+        int daysWithOutLunch = workingTimeRepository.calculateDaysWithOnlyOneWorkingTimeAndWorkingFor6HoursOrMoreOfConsultantId(consultantId);
+
+        // subtract 1 hours (60 mins) for each day without a lunch break
+        return minutesWorkedPerMonth - daysWithOutLunch* 60L;
     }
 
     public int roundWorkingTime(int minutesWorked){
