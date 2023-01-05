@@ -1,5 +1,6 @@
 package be.abis.abisemployeesystem;
 
+import be.abis.abisemployeesystem.dto.WorkingTimeSalaryDTO;
 import be.abis.abisemployeesystem.exception.EmployeeNotFoundException;
 import be.abis.abisemployeesystem.exception.WorkingTimeCannotEndException;
 import be.abis.abisemployeesystem.exception.WorkingTimeCannotStartException;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
+
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -83,7 +86,7 @@ public class WorkingTimeServiceTest {
     @Test
     void getOpenWorkingTimeForConsultant() throws WrongTypeException, WorkingTimeCannotStartException, EmployeeNotFoundException {
         WorkingTime start = workingTimeService.startWorkingTime(3);
-        WorkingTime time = workingTimeService.getOpenWorkingTimeForConsultantId(3);
+        WorkingTime time = workingTimeService.getOpenWorkingTimeForConsultantIdToday(3);
         assertEquals(3, time.getConsultant().getId());
         assertEquals(start.getStartTime(), time.getStartTime());
     }
@@ -111,11 +114,42 @@ public class WorkingTimeServiceTest {
     @Test
     void getSalaryForConsultant11Returns210_000() throws WrongTypeException, EmployeeNotFoundException {
         assertEquals(420, workingTimeService.calculateSalaryOfConsultantForMonth(11, 12, 2022).getMinutesWorked());
-        assertEquals(2137.5, workingTimeService.calculateSalaryOfConsultantForMonth(11, 12, 2022).getSalary());
+        assertEquals(3500, workingTimeService.calculateSalaryOfConsultantForMonth(11, 12, 2022).getSalary());
     }
 
     @Test
     void getSalariesForAllConsultants() throws WrongTypeException, EmployeeNotFoundException {
         System.out.println(workingTimeService.calculateSalariesOfAllConsultantsForMonth( 12, 2022));
+    }
+
+    @Test
+    void testingSubtractLunch() throws WrongTypeException, EmployeeNotFoundException {
+        WorkingTimeSalaryDTO wts = workingTimeService.calculateSalaryOfConsultantForMonth(10,12,2022);
+        assertEquals(2040, wts.getMinutesWorked());
+        assertEquals(17000, wts.getSalary());
+    }
+
+    @Test
+    void testingSubtractLunchWithRoundingMins() throws WrongTypeException, EmployeeNotFoundException {
+        WorkingTimeSalaryDTO wts = workingTimeService.calculateSalaryOfConsultantForMonth(3,12,2022);
+        assertEquals(915, wts.getMinutesWorked());
+        assertEquals(7625, wts.getSalary());
+    }
+
+    @Test
+    void testingSubtractLunchWithRoundingMins2() throws WrongTypeException, EmployeeNotFoundException {
+        WorkingTimeSalaryDTO wts = workingTimeService.calculateSalaryOfConsultantForMonth(4,12,2022);
+        assertEquals(750, wts.getMinutesWorked());
+        assertEquals(5625, wts.getSalary());
+    }
+
+    @Transactional
+    @Test
+    void startWorkingTimeWithPreviouslyOpenWorkingTimeC4() throws WrongTypeException, WorkingTimeCannotStartException, EmployeeNotFoundException {
+        assertEquals(1, workingTimeService.getLastOpenWorkingTimesForConsultantIdBeforeDate(4,
+                LocalDate.of(2022,12,24)).size());
+        workingTimeService.startWorkingTime(4);
+        assertEquals(0, workingTimeService.getLastOpenWorkingTimesForConsultantIdBeforeDate(4,
+                LocalDate.of(2022,12,24)).size());
     }
 }

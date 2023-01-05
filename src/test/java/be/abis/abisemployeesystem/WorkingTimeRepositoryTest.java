@@ -10,6 +10,7 @@ import org.springframework.orm.jpa.JpaSystemException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
@@ -31,5 +32,11 @@ public class WorkingTimeRepositoryTest {
     @Test
     void getWorkingTimesForConsultantOnDate(){
         //repository.getWorkingTimesByConsultantIdAndDate();
+    }
+
+    @Test
+    void getOpenWorkingTimesBeforeDateForConsultant4GIvesOneOpen(){
+        assertEquals(1, repository.getOpenWorkingTimesBeforeDateForConsultant(4,
+                LocalDate.of(2022, 12, 24)).size());
     }
 }

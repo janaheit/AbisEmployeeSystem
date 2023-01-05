@@ -31,8 +31,12 @@ public interface WorkingTimeRepository extends JpaRepository<WorkingTime, Intege
             "and workingdate <= :end", nativeQuery = true)
     List<WorkingTime> getWorkingTimesByConsultantIdBetweenDates(int consultantId, LocalDate start, LocalDate end);
 
-    @Query(value = "select count(*) from workingtimes where employee_id=10 and timeworked >=360 and workingdate in " +
-            "(select workingdate from workingtimes where employee_id =10 " +
+    @Query(value = "select count(*) from workingtimes where employee_id=:consultantId and timeworked >=360 and workingdate in " +
+            "(select workingdate from workingtimes where employee_id =:consultantId " +
             "group by workingdate having count(workingdate)=1)", nativeQuery = true)
     int calculateDaysWithOnlyOneWorkingTimeAndWorkingFor6HoursOrMoreOfConsultantId(int consultantId);
+
+    @Query(value = "select * from workingtimes where employee_id=:consultantId and workingdate < :date and endtime is null",
+    nativeQuery = true)
+    List<WorkingTime> getOpenWorkingTimesBeforeDateForConsultant(int consultantId, LocalDate date);
 }

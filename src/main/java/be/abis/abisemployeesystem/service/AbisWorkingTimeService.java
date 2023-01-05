@@ -68,12 +68,15 @@ public class AbisWorkingTimeService implements WorkingTimeService {
         }
 
         // if workingTime still open -> exception
-        List<WorkingTime> timesToday = workingTimeRepository.getWorkingTimesByConsultantIdAndDate(consultantId, LocalDate.now());
-        for(WorkingTime time : timesToday){
-            System.out.println(time);
-            if(time.getEndTime() == null){
-                throw new WorkingTimeCannotStartException("uren voor deze persoon zijn nog steeds " +
-                        "open, daarom kunt U geen nieuwe beginnen");
+        if (getOpenWorkingTimeForConsultantIdToday(consultantId) != null) throw new WorkingTimeCannotStartException("uren voor deze persoon zijn nog steeds " +
+                "open, daarom kunt U geen nieuwe beginnen");
+
+        // close any previously open ones at midnight (23:59)
+        List<WorkingTime> previousOpen = workingTimeRepository.getOpenWorkingTimesBeforeDateForConsultant(consultantId,
+                LocalDate.now());
+        if (previousOpen.size() != 0){
+            for (WorkingTime time : previousOpen){
+                endAndSaveWorkingTime(time, LocalTime.MIDNIGHT.minusMinutes(1).truncatedTo(ChronoUnit.MINUTES));
             }
         }
 
@@ -99,22 +102,31 @@ public class AbisWorkingTimeService implements WorkingTimeService {
     public WorkingTime endWorkingTime(int consultantId) throws WorkingTimeCannotEndException, WrongTypeException, EmployeeNotFoundException {
 
         // check whether a working time for this consultant already exists
-        WorkingTime update = getOpenWorkingTimeForConsultantId(consultantId);
+        WorkingTime update = getOpenWorkingTimeForConsultantIdToday(consultantId);
 
         if (update == null){
             throw new WorkingTimeCannotEndException("Er zijn geen uren voor deze persoon die kunnen worden gestopt");
         }
 
-        update.setEndTime(LocalTime.now().truncatedTo(ChronoUnit.MINUTES));
-        // calculate difference in minutes = timeWorked
-        int mins = (int) update.getStartTime().until(update.getEndTime(), ChronoUnit.MINUTES);
-        update.setTimeWorkedMin(mins);
+        return endAndSaveWorkingTime(update, LocalTime.now().truncatedTo(ChronoUnit.MINUTES));
+    }
 
-        return workingTimeRepository.save(update);
+    private WorkingTime endAndSaveWorkingTime(WorkingTime time, LocalTime endTime){
+        time.setEndTime(endTime);
+        // calculate difference in minutes = timeWorked
+        int mins = (int) time.getStartTime().until(time.getEndTime(), ChronoUnit.MINUTES);
+        time.setTimeWorkedMin(mins);
+
+        return workingTimeRepository.save(time);
     }
 
     @Override
-    public WorkingTime getOpenWorkingTimeForConsultantId(int consultantId) throws EmployeeNotFoundException, WrongTypeException {
+    public List<WorkingTime> getLastOpenWorkingTimesForConsultantIdBeforeDate(int consultantId, LocalDate date) throws EmployeeNotFoundException, WrongTypeException {
+        return workingTimeRepository.getOpenWorkingTimesBeforeDateForConsultant(consultantId, date);
+    }
+
+    @Override
+    public WorkingTime getOpenWorkingTimeForConsultantIdToday(int consultantId) throws EmployeeNotFoundException, WrongTypeException {
         if (!(employeeService.getById(consultantId) instanceof Consultant)){
             throw new WrongTypeException("alleen consultants kunnen hun uren registreren");
         }
@@ -181,7 +193,8 @@ public class AbisWorkingTimeService implements WorkingTimeService {
         // Here calculating the days where a person only registered one working time and this time being more than
         // 6 hours => only then, we want to subtract 1 hour lunch break (so that people are not paid for lunch)
         int daysWithOutLunch = workingTimeRepository.calculateDaysWithOnlyOneWorkingTimeAndWorkingFor6HoursOrMoreOfConsultantId(consultantId);
-
+        System.out.println("dayswihtoutlunch: " + daysWithOutLunch);
+        System.out.println("mins worked rounded: " + minutesWorkedPerMonth);
         // subtract 1 hours (60 mins) for each day without a lunch break
         return minutesWorkedPerMonth - daysWithOutLunch* 60L;
     }

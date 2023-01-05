@@ -18,7 +18,8 @@ public interface WorkingTimeService {
     List<WorkingTime> getByConsultantId(int consultantId);
     List<WorkingTime> getByDate(LocalDate date);
     List<WorkingTime> getByConsultantIdAndDate(int consultantId, LocalDate date) throws EmployeeNotFoundException;
-    WorkingTime getOpenWorkingTimeForConsultantId(int consultantId) throws EmployeeNotFoundException, WrongTypeException;
+    WorkingTime getOpenWorkingTimeForConsultantIdToday(int consultantId) throws EmployeeNotFoundException, WrongTypeException;
+    List<WorkingTime> getLastOpenWorkingTimesForConsultantIdBeforeDate(int consultantId, LocalDate date) throws EmployeeNotFoundException, WrongTypeException;
     WorkingTime startWorkingTime(int consultantId) throws EmployeeNotFoundException, WrongTypeException, WorkingTimeCannotStartException;
     WorkingTime endWorkingTime(int consultantId) throws WorkingTimeCannotEndException, WrongTypeException, EmployeeNotFoundException;
     long getWorkingMinutesOfConsultantForMonth(int consultantId, int month, int year);
