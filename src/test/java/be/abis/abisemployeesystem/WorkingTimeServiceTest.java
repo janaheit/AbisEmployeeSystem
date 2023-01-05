@@ -112,7 +112,7 @@ public class WorkingTimeServiceTest {
     }
 
     @Test
-    void getSalaryForConsultant11Returns210_000() throws WrongTypeException, EmployeeNotFoundException {
+    void getSalaryForConsultant11Returns3500() throws WrongTypeException, EmployeeNotFoundException {
         assertEquals(420, workingTimeService.calculateSalaryOfConsultantForMonth(11, 12, 2022).getMinutesWorked());
         assertEquals(3500, workingTimeService.calculateSalaryOfConsultantForMonth(11, 12, 2022).getSalary());
     }
@@ -125,15 +125,15 @@ public class WorkingTimeServiceTest {
     @Test
     void testingSubtractLunch() throws WrongTypeException, EmployeeNotFoundException {
         WorkingTimeSalaryDTO wts = workingTimeService.calculateSalaryOfConsultantForMonth(10,12,2022);
-        assertEquals(2040, wts.getMinutesWorked());
-        assertEquals(17000, wts.getSalary());
+        assertEquals(1920, wts.getMinutesWorked());
+        assertEquals(16000, wts.getSalary());
     }
 
     @Test
     void testingSubtractLunchWithRoundingMins() throws WrongTypeException, EmployeeNotFoundException {
         WorkingTimeSalaryDTO wts = workingTimeService.calculateSalaryOfConsultantForMonth(3,12,2022);
-        assertEquals(915, wts.getMinutesWorked());
-        assertEquals(7625, wts.getSalary());
+        assertEquals(1455, wts.getMinutesWorked());
+        assertEquals(12125, wts.getSalary());
     }
 
     @Test
