@@ -2,10 +2,7 @@ package be.abis.abisemployeesystem.service;
 
 import be.abis.abisemployeesystem.dto.ConsultantSalaryDTO;
 import be.abis.abisemployeesystem.dto.WorkingTimeSalaryDTO;
-import be.abis.abisemployeesystem.exception.EmployeeNotFoundException;
-import be.abis.abisemployeesystem.exception.WorkingTimeCannotEndException;
-import be.abis.abisemployeesystem.exception.WorkingTimeCannotStartException;
-import be.abis.abisemployeesystem.exception.WrongTypeException;
+import be.abis.abisemployeesystem.exception.*;
 import be.abis.abisemployeesystem.mapper.ConsultantSalaryMapper;
 import be.abis.abisemployeesystem.model.Consultant;
 import be.abis.abisemployeesystem.model.Employee;
@@ -192,7 +189,7 @@ public class AbisWorkingTimeService implements WorkingTimeService {
 
         // Here calculating the days where a person only registered one working time and this time being more than
         // 6 hours => only then, we want to subtract 1 hour lunch break (so that people are not paid for lunch)
-        int daysWithOutLunch = workingTimeRepository.calculateDaysWithOnlyOneWorkingTimeAndWorkingFor6HoursOrMoreOfConsultantId(consultantId);
+        int daysWithOutLunch = workingTimeRepository.calculateDaysWithOnlyOneWorkingTimeAndWorkingFor6HoursOrMoreOfConsultantId(consultantId, start, end);
         System.out.println("dayswihtoutlunch: " + daysWithOutLunch);
         System.out.println("mins worked rounded: " + minutesWorkedPerMonth);
         // subtract 1 hours (60 mins) for each day without a lunch break
@@ -210,5 +207,21 @@ public class AbisWorkingTimeService implements WorkingTimeService {
         else minutesLeft = 60;
 
         return hours*60 + minutesLeft;
+    }
+
+    @Override
+    public WorkingTime findById(int id) throws WorkingTimeNotFoundException {
+        return workingTimeRepository.findById(id).orElseThrow(() -> new WorkingTimeNotFoundException("deze werktijd bestaat niet"));
+    }
+
+    @Override
+    public void deleteWorkingTime(int id) throws WorkingTimeCannotBeDeletedException {
+        try {
+            findById(id);
+            workingTimeRepository.deleteById(id);
+        } catch (WorkingTimeNotFoundException e){
+            throw new WorkingTimeCannotBeDeletedException("deze werktijd bestaat niet en kan dus niet verwijderd worden");
+        }
+
     }
 }

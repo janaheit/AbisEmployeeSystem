@@ -5,10 +5,7 @@ package be.abis.abisemployeesystem.handler;
 
 
 import be.abis.abisemployeesystem.error.ApiError;
-import be.abis.abisemployeesystem.exception.EmployeeNotFoundException;
-import be.abis.abisemployeesystem.exception.WorkingTimeCannotEndException;
-import be.abis.abisemployeesystem.exception.WorkingTimeCannotStartException;
-import be.abis.abisemployeesystem.exception.WrongTypeException;
+import be.abis.abisemployeesystem.exception.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -60,6 +57,17 @@ public class RestResponseEntityExceptionHandler
             ( WrongTypeException wtexc, WebRequest request) {
         HttpStatus status = HttpStatus.CONFLICT;
         ApiError err = new ApiError("wrong type", status.value(), wtexc.getMessage());
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.add("content-type",
+                MediaType.APPLICATION_PROBLEM_JSON_VALUE);
+        return new ResponseEntity<ApiError>(err, responseHeaders, status);
+    }
+
+    @ExceptionHandler(value = WorkingTimeCannotBeDeletedException.class)
+    protected ResponseEntity<? extends Object> WorkingTimeCannotBeDeletedException
+            ( WorkingTimeCannotBeDeletedException wtexc, WebRequest request) {
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        ApiError err = new ApiError("niet gevonden", status.value(), wtexc.getMessage());
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("content-type",
                 MediaType.APPLICATION_PROBLEM_JSON_VALUE);

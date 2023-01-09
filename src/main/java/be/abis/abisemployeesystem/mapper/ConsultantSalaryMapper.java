@@ -12,6 +12,7 @@ public class ConsultantSalaryMapper {
         dto.setAbbreviation(consultant.getAbbreviation());
         dto.setSalary(salary);
         dto.setMinutesWorked(minsWorked);
+        dto.setHourlyRate(consultant.getHourlyRate());
         return dto;
     }
 }

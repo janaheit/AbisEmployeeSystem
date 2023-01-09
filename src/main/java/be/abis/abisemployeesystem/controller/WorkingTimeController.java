@@ -1,10 +1,7 @@
 package be.abis.abisemployeesystem.controller;
 
 import be.abis.abisemployeesystem.dto.ConsultantSalaryDTO;
-import be.abis.abisemployeesystem.exception.EmployeeNotFoundException;
-import be.abis.abisemployeesystem.exception.WorkingTimeCannotEndException;
-import be.abis.abisemployeesystem.exception.WorkingTimeCannotStartException;
-import be.abis.abisemployeesystem.exception.WrongTypeException;
+import be.abis.abisemployeesystem.exception.*;
 import be.abis.abisemployeesystem.model.WorkingTime;
 import be.abis.abisemployeesystem.service.WorkingTimeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +40,11 @@ public class WorkingTimeController {
     @GetMapping("salaries/{year}/{month}")
     List<ConsultantSalaryDTO> getSalariesOfAllConsultantsForYearAndMonth(@PathVariable("year") int year, @PathVariable("month") int month) throws WrongTypeException, EmployeeNotFoundException {
         return workingTimeService.calculateSalariesOfAllConsultantsForMonth(month, year);
+    }
+
+    @DeleteMapping("{id}")
+    void deleteWorkingTime(@PathVariable("id") int id) throws WorkingTimeCannotBeDeletedException {
+        workingTimeService.deleteWorkingTime(id);
     }
 
 }
