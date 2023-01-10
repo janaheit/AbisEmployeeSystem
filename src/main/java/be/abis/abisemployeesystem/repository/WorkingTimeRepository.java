@@ -33,7 +33,7 @@ public interface WorkingTimeRepository extends JpaRepository<WorkingTime, Intege
 
     @Query(value = "select count(*) from workingtimes where employee_id=:consultantId " +
             "and workingdate >= :start and workingdate <= :end and timeworked >=360 " +
-            "and starttime >= '09:00:00' and endtime <= '17:00:00' and workingdate in " +
+            "and starttime >= '07:00:00' and endtime <= '18:00:00' and workingdate in " +
             "(select workingdate from workingtimes where employee_id =:consultantId " +
             "group by workingdate having count(workingdate)=1)", nativeQuery = true)
     int calculateDaysWithOnlyOneWorkingTimeAndWorkingFor6HoursOrMoreOfConsultantId(int consultantId, LocalDate start, LocalDate end);
